@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>ExampleMod</AssemblyName>
-        <Description>Example Mod</Description>
+        <AssemblyName>ColorAssist</AssemblyName>
+        <Description>ColorAssist</Description>
         <TargetFramework>netstandard2.1</TargetFramework>
         <Version>1.0.0</Version>
         <LangVersion>latest</LangVersion>
@@ -11,7 +11,7 @@
 
 
         <!-- todo macOS -->
-        <NineSolsPath Condition="'$(OS)' == 'Windows_NT'">C:/Program Files (x86)/Steam/steamapps/common/Nine Sols</NineSolsPath>
+        <NineSolsPath Condition="'$(OS)' == 'Windows_NT'">E:\Games\Nine Sols</NineSolsPath>
         <NineSolsPath Condition="'$(OS)' != 'Windows_NT'">$(HOME)/.local/share/Steam/steamapps/common/Nine Sols</NineSolsPath>
         
         <!-- If you're not using R2Modman/Thunderstore, this can be NineSolsPath as well. Only used in CopyDir -->
