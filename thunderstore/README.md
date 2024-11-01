@@ -1,4 +1,15 @@
-# Nine Sols Example Mod
+# ColorAssist
 
-Write a description of your mod here, it will be displayed on thunderstore.
-Remember to update the icon.png to something representing your mod.
+# Feature Filter
+- Protanopia
+- Protanomaly
+- Deuteranopia
+- Deuteranomaly
+- Tritanopia
+- Tritanomaly
+- Achromatopsia
+- Achromatomaly
+- Custom Internal Injury Color
+
+# Filter Source
+- https://assetstore.unity.com/packages/tools/camera/colorblind-filter-271140

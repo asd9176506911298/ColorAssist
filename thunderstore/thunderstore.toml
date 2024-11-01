@@ -2,11 +2,11 @@
 schemaVersion = "0.0.1"
 
 [package]
-namespace = "yournamespace"
-name = "YourModName"
+namespace = "ColorAssist"
+name = "ColorAssist"
 versionNumber = "0.1.0"
-description = "your mod description"
-websiteUrl = "link to the git repo"
+description = "ColorAssist"
+websiteUrl = "https://github.com/asd9176506911298/NineSols-ColorAssist"
 containsNsfwContent = false
 
 [package.dependencies]

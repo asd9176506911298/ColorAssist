@@ -191,6 +191,7 @@ namespace ColorAssist {
         private void ChangeFilter(string filterName) {
             Material material = Array.Find(colorBlindMaterials, m => m.name == filterName);
             if (material != null) SetFilterMaterial(material);
+            isEnableFilter.Value = true;
         }
 
         private void UpdateHealthColor() {
