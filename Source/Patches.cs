@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace ExampleMod;
+namespace ColorAssist;
 
 [HarmonyPatch]
 public class Patches {
