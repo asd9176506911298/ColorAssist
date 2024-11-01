@@ -20,6 +20,12 @@
         <!-- After building, copy the dll to this folder. Useful for hot-reloading: https://github.com/BepInEx/BepInEx.Debug/blob/master/README.md#scriptengine -->
         <CopyDir>$(ProfileDir)/BepInEx/scripts</CopyDir>
     </PropertyGroup>
+    <ItemGroup>
+      <None Remove="Resources\shader" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\shader" />
+    </ItemGroup>
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp">

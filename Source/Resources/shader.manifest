@@ -1,0 +1,29 @@
+ManifestFileVersion: 0
+CRC: 3515289643
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 2ef66a6095333425ae96359059d57cf1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5e762ccb57c4caaabbb5a4199ac82c23
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 2ef66a6095333425ae96359059d57cf1
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/ColorblindFilter/Achromatomaly.mat
+- Assets/ColorblindFilter/Achromatopsia.mat
+- Assets/ColorblindFilter/Tritanopia.mat
+- Assets/ColorblindFilter/Protanomaly.mat
+- Assets/ColorblindFilter/Deuteranomaly.mat
+- Assets/ColorblindFilter/Deuteranopia.mat
+- Assets/ColorblindFilter/Tritanomaly.mat
+- Assets/ColorblindFilter/Protanopia.mat
+Dependencies: []
