@@ -5,7 +5,7 @@ schemaVersion = "0.0.1"
 namespace = "ColorAssist"
 name = "ColorAssist"
 versionNumber = "0.1.0"
-description = "ColorAssist"
+description = "A color accessibility assistant for improved visual clarity"
 websiteUrl = "https://github.com/asd9176506911298/NineSols-ColorAssist"
 containsNsfwContent = false
 
