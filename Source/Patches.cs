@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using NineSolsAPI;
+using System;
 using UnityEngine;
 
 namespace ColorAssist;
@@ -23,12 +24,69 @@ public class Patches {
 
         if (!ColorAssist.Instance.isHeealthBar.Value) return true;
 
-        __instance.gameObject.GetComponent<SpriteRenderer>().color = new Color(
-                        ColorAssist.Instance.R.Value / 255f, // Convert R from 0-255 to 0-1
-                        ColorAssist.Instance.G.Value / 255f, // Convert G from 0-255 to 0-1
-                        ColorAssist.Instance.B.Value / 255f, // Convert B from 0-255 to 0-1
-                        ColorAssist.Instance.A.Value / 255f  // Convert A from 0-255 to 0-1
-                    );
+        __instance.gameObject.GetComponent<SpriteRenderer>().color = ColorAssist.Instance.healthBarColor;
         return true; // the original method should be executed
     }
+
+    [HarmonyPatch(typeof(PoolManager), "Borrow",
+    new Type[] { typeof(PoolObject), typeof(Vector3), typeof(Quaternion), typeof(Transform), typeof(Action<PoolObject>) })]
+    [HarmonyPostfix]
+    public static void Postfix(ref PoolObject __result, PoolObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, Action<PoolObject> handler = null) {
+        //ToastManager.Toast(prefab.name);
+
+        Color color = ColorAssist.Instance.isAttackEffect.Value ? ColorAssist.Instance.attackEffectColor : ColorAssist.Instance.defaultColor;
+
+        if (ColorAssist.Instance.kickHint == null) {
+            GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+            foreach (var obj in allObjects) {
+                if (obj.name == "MultiSpriteEffect_Prefab 識破提示Variant") {
+                    ColorAssist.Instance.kickHint = obj.GetComponentInChildren<SpriteRenderer>().material;
+                }
+            }
+        }
+
+        Material material = ColorAssist.Instance.isAttackEffect.Value ? ColorAssist.Instance.kickHint : ColorAssist.Instance.defaultMaterial;
+
+        if (prefab.name == "Effect_TaiDanger") {
+            SpriteRenderer Sprite = __result.transform.Find("Sprite").GetComponent<SpriteRenderer>();
+
+            if (ColorAssist.Instance.kickHint != null) {
+                Sprite.material = material;
+                if (Sprite.material.HasProperty("_OutlineColor")) {
+                    Sprite.material.SetColor("_OutlineColor", color);
+                } else {
+                    Debug.LogWarning("Material does not have '_OutlineColor' property.");
+                }
+            }
+        }
+
+        if (prefab.name == "MultiSpriteEffect_Prefab 識破提示Variant") {
+            SpriteRenderer Sprite = __result.transform.Find("View").Find("Sprite").GetComponent<SpriteRenderer>();
+
+            if (Sprite.material.HasProperty("_OutlineColor")) {
+                Sprite.material.SetColor("_OutlineColor", color);
+            } else {
+                Debug.LogWarning("Material does not have '_OutlineColor' property.");
+            }
+        }
+
+        if (prefab.name == "紅閃 FullScreen Slash FX Damage Danger") {
+            Transform animatorTransform = __result.transform.Find("Animator");
+
+            // Process each required child Sprite
+            string[] spriteNames = { "Line", "SHape", "SHape 2" };
+            foreach (string spriteName in spriteNames) {
+                SpriteRenderer Sprite = animatorTransform.Find(spriteName).GetComponent<SpriteRenderer>();
+                Sprite.material = material;
+
+                if (Sprite.material.HasProperty("_OutlineColor")) {
+                    Sprite.material.SetColor("_OutlineColor", color);
+                } else {
+                    Debug.LogWarning($"Material in {spriteName} does not have '_OutlineColor' property.");
+                }
+            }
+        }
+    }
+
+
 }
