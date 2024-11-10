@@ -182,6 +182,8 @@ namespace ColorAssist {
 
             defaultMaterial = new Material(Shader.Find("Sprites/Default"));
             defaultColor = new Color(0.259f, 1.000f, 0.521f, 1.000f);
+            UpdateHealthColor();
+            UpdateAttackEffectColor();
 
             Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
         }
