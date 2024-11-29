@@ -27,19 +27,15 @@ namespace ColorAssist {
         private ConfigEntry<bool> isTritanomaly;
         private ConfigEntry<bool> isAchromatopsia;
         private ConfigEntry<bool> isAchromatomaly;
-        public ConfigEntry<bool> isHeealthBar;
+        public ConfigEntry<bool> isNormalHeealthBar;
+        public ConfigEntry<bool> isInternalHeealthBar;
+        public ConfigEntry<bool> isBossHeealthBar;
         public ConfigEntry<bool> isAttackEffect;
-        public ConfigEntry<int> R;
-        public ConfigEntry<int> G;
-        public ConfigEntry<int> B;
-        public ConfigEntry<int> A;
-        public ConfigEntry<int> R2;
-        public ConfigEntry<int> G2;
-        public ConfigEntry<int> B2;
-        public ConfigEntry<int> A2;
+        public ConfigEntry<Color> _NormalHpColor;
+        public ConfigEntry<Color> _InternalHpColor;
+        public ConfigEntry<Color> _BossHpColor;
+        public ConfigEntry<Color> _AttackEffectColor;
 
-        public Color healthBarColor;
-        public Color attackEffectColor;
         public Color defaultColor;
 
         private const string Protanopia = "Protanopia";
@@ -111,45 +107,37 @@ namespace ColorAssist {
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 11 }));
 
-            isHeealthBar = Config.Bind<bool>("", "Enable HeealthBar Color", false,
+            isNormalHeealthBar = Config.Bind<bool>("", "Enable NormalHeealthBar Color", false,
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 10 }));
 
-            R = Config.Bind<int>("", "Red", 255,
+            _NormalHpColor = Config.Bind<Color>("", "Normal Health Color", new Vector4(255f, 255f, 0f, 255f),
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 9 }));
 
-            G = Config.Bind<int>("", "Green", 255,
+            isInternalHeealthBar = Config.Bind<bool>("", "Enable InternalHeealthBar Color", false,
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 8 }));
 
-            B = Config.Bind<int>("", "Blue", 0,
+            _InternalHpColor = Config.Bind<Color>("", "Internal Health Color", new Vector4(255f,255f,0f,255f),
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 7 }));
 
-            A = Config.Bind<int>("", "Alpha", 255,
+            isBossHeealthBar = Config.Bind<bool>("", "Enable BossHeealthBar Color", false,
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 6 }));
 
-            isAttackEffect = Config.Bind<bool>("", "Enable AttackEffect Color", false,
+            _BossHpColor = Config.Bind<Color>("", "Boss Health Color", new Vector4(255f, 255f, 0f, 255f),
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 5 }));
 
-            R2 = Config.Bind<int>("", "Red2", 255,
-                new ConfigDescription("", null,
-                new ConfigurationManagerAttributes { Order = 4 }));
+            isAttackEffect = Config.Bind<bool>("", "Enable AttackEffect Color", false,
+                            new ConfigDescription("", null,
+                            new ConfigurationManagerAttributes { Order = 4 }));
 
-            G2 = Config.Bind<int>("", "Green2", 255,
+            _AttackEffectColor = Config.Bind<Color>("", "Attack Effect Color", new Vector4(255f, 255f, 0f, 255f),
                             new ConfigDescription("", null,
                             new ConfigurationManagerAttributes { Order = 3 }));
-
-            B2 = Config.Bind<int>("", "Blue2", 0,
-                            new ConfigDescription("", null,
-                            new ConfigurationManagerAttributes { Order = 2 }));
-
-            A2 = Config.Bind<int>("", "Alpha2", 255,
-                            new ConfigDescription("", null,
-                            new ConfigurationManagerAttributes { Order = 1 }));
 
             colorBlindMaterials = LoadColorBlindMaterials();
 
@@ -168,17 +156,17 @@ namespace ColorAssist {
             isAchromatopsia.SettingChanged += (s, e) => ChangeFilter(Achromatopsia);
             isAchromatomaly.SettingChanged += (s, e) => ChangeFilter(Achromatomaly);
 
-            isHeealthBar.SettingChanged += (s, e) => UpdateHealthColor();
-            R.SettingChanged += (s, e) => UpdateHealthColor();
-            G.SettingChanged += (s, e) => UpdateHealthColor();
-            B.SettingChanged += (s, e) => UpdateHealthColor();
-            A.SettingChanged += (s, e) => UpdateHealthColor();
+            isNormalHeealthBar.SettingChanged += (s, e) => UpdateHealthColor();
+            _NormalHpColor.SettingChanged += (s, e) => UpdateHealthColor();
+
+            isInternalHeealthBar.SettingChanged += (s, e) => UpdateHealthColor();
+            _InternalHpColor.SettingChanged += (s, e) => UpdateHealthColor();
+
+            isBossHeealthBar.SettingChanged += (s, e) => UpdateHealthColor();
+            _BossHpColor.SettingChanged += (s, e) => UpdateHealthColor();
 
             isAttackEffect.SettingChanged += (s, e) => UpdateAttackEffectColor();
-            R2.SettingChanged += (s, e) => UpdateAttackEffectColor();
-            G2.SettingChanged += (s, e) => UpdateAttackEffectColor();
-            B2.SettingChanged += (s, e) => UpdateAttackEffectColor();
-            A2.SettingChanged += (s, e) => UpdateAttackEffectColor();
+            _AttackEffectColor.SettingChanged += (s, e) => UpdateAttackEffectColor();
 
             defaultMaterial = new Material(Shader.Find("Sprites/Default"));
             defaultColor = new Color(0.259f, 1.000f, 0.521f, 1.000f);
@@ -236,6 +224,17 @@ namespace ColorAssist {
         private void TestMethod() {
             if (!enableSomethingConfig.Value) return;
 
+            GameObject bar = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar");
+            bar.GetComponent<Animator>().enabled = false;
+
+            GameObject NormalHealth = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health");
+            ToastManager.Toast(NormalHealth);
+            if (NormalHealth) {
+                ToastManager.Toast(NormalHealth.GetComponent<SpriteRenderer>().color);
+                NormalHealth.GetComponent<SpriteRenderer>().color = _NormalHpColor.Value;
+            }
+            ToastManager.Toast("test");
+            return;
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
 
             foreach (var obj in allObjects) {
@@ -253,10 +252,10 @@ namespace ColorAssist {
                 //    obj.transform.Find("Animator").Find("ParticleSystem").GetComponent<ParticleSystemRenderer>().material.SetColor("_OutlineColor", new Color(0, 0, 1, 1));
                 //}
             }
-            MakeOutline("Animator/View/YiGung/Weapon/Foo/FooSprite", attackEffectColor);
-            MakeOutline("Animator/View/YiGung/Weapon/Sword/Effect", attackEffectColor);
-            MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/紅/AttackEffect", attackEffectColor);
-            MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/究極紅/AttackEffect", attackEffectColor);
+            MakeOutline("Animator/View/YiGung/Weapon/Foo/FooSprite", _AttackEffectColor.Value);
+            MakeOutline("Animator/View/YiGung/Weapon/Sword/Effect", _AttackEffectColor.Value);
+            MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/紅/AttackEffect", _AttackEffectColor.Value);
+            MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/究極紅/AttackEffect", _AttackEffectColor.Value);
             return;
 
             ToastManager.Toast("TestMethod Triggered");
@@ -333,43 +332,97 @@ namespace ColorAssist {
         }
 
         private void UpdateAttackEffectColor() {
-            attackEffectColor = new Color(
-                        R2.Value / 255f, // Convert R from 0-255 to 0-1
-                        G2.Value / 255f, // Convert G from 0-255 to 0-1
-                        B2.Value / 255f, // Convert B from 0-255 to 0-1
-                        A2.Value / 255f  // Convert A from 0-255 to 0-1
-                    );
             if(SceneManager.GetActiveScene().name == "A11_S0_Boss_YiGung_回蓬萊" || SceneManager.GetActiveScene().name == "A11_S0_Boss_YiGung") {
-                MakeOutline("Animator/View/YiGung/Weapon/Foo/FooSprite", attackEffectColor);
-                MakeOutline("Animator/View/YiGung/Weapon/Sword/Effect", attackEffectColor);
-                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/紅/AttackEffect", attackEffectColor);
-                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/究極紅/AttackEffect", attackEffectColor);
+                MakeOutline("Animator/View/YiGung/Weapon/Foo/FooSprite", _AttackEffectColor.Value);
+                MakeOutline("Animator/View/YiGung/Weapon/Sword/Effect", _AttackEffectColor.Value);
+                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/紅/AttackEffect", _AttackEffectColor.Value);
+                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/究極紅/AttackEffect", _AttackEffectColor.Value);
             }
         }
 
         private void UpdateHealthColor() {
-            healthBarColor = new Color(
-                        R.Value / 255f, // Convert R from 0-255 to 0-1
-                        G.Value / 255f, // Convert G from 0-255 to 0-1
-                        B.Value / 255f, // Convert B from 0-255 to 0-1
-                        A.Value / 255f  // Convert A from 0-255 to 0-1
-                    );
-            GameObject RecoverableHealth = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth");
-            if (RecoverableHealth) {
-                if (isHeealthBar.Value) {
-                    RecoverableHealth.GetComponent<SpriteRenderer>().color = healthBarColor;
-                } else
-                    RecoverableHealth.GetComponent<SpriteRenderer>().color = new Color(0.566f, 0.000f, 0.161f, 0.706f);
+            
+            // Update health bar color for specific GameObjects
+            UpdateBarColor(
+                "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth",
+                isInternalHeealthBar.Value,
+                ConvertToColor(_InternalHpColor.Value),
+                new Color(0.566f, 0.000f, 0.161f, 0.706f)
+            );
+
+            UpdateBarColor(
+                "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)/Offset(DontKeyAnimationOnThisNode)/AnimationOffset/HealthBar/BG/MaxHealth/Internal Injury",
+                isInternalHeealthBar.Value,
+                ConvertToColor(_InternalHpColor.Value),
+                new Color(0.481f, 0.000f, 0.242f, 1.000f)
+            );
+
+      
+            DisableAnimator("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar");
+            UpdateBarColor(
+                "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health",
+                isNormalHeealthBar.Value,
+                ConvertToColor(_NormalHpColor.Value),
+                new Color(0.321f, 1f, 0.678f, 1f)
+            );
+
+
+
+            DisableAnimator("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)");
+            UpdateBarColor(
+                "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)/Offset(DontKeyAnimationOnThisNode)/AnimationOffset/HealthBar/BG/MaxHealth/Health",
+                true,
+                ConvertToColor(_BossHpColor.Value),
+                new Color(1f, 0.239f, 0.324f, 1f)
+            );
+  
+        }
+
+        // Helper Method to Update Bar Color
+        private void UpdateBarColor(string objectPath, bool condition, Color trueColor, Color falseColor, string animatorPath = "") {
+            GameObject barObject = GameObject.Find(objectPath);
+            if (barObject) {
+                SpriteRenderer renderer = barObject.GetComponent<SpriteRenderer>();
+                if (renderer) {
+                    renderer.color = condition ? trueColor : falseColor;
+                }
             }
 
-            GameObject InternalInjury = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)/Offset(DontKeyAnimationOnThisNode)/AnimationOffset/HealthBar/BG/MaxHealth/Internal Injury");  
-            if (InternalInjury) {
-                if (isHeealthBar.Value) {
-                    InternalInjury.GetComponent<SpriteRenderer>().color = healthBarColor;
-                } else
-                    InternalInjury.GetComponent<SpriteRenderer>().color = new Color(0.481f, 0.000f, 0.242f, 1.000f);
+            if(animatorPath != "") {
+                if (condition)
+                    DisableAnimator(animatorPath);
+                else
+                    EnableAnimator(animatorPath);
             }
         }
+
+        // Helper Method to Disable Animator
+        public void DisableAnimator(string objectPath) {
+            GameObject animObject = GameObject.Find(objectPath);
+            if (animObject) {
+                Animator animator = animObject.GetComponent<Animator>();
+                if (animator) {
+                    animator.enabled = false;
+                }
+            }
+        }
+
+        // Helper Method to Enable Animator
+        private void EnableAnimator(string objectPath) {
+            GameObject animObject = GameObject.Find(objectPath);
+            if (animObject) {
+                Animator animator = animObject.GetComponent<Animator>();
+                if (animator) {
+                    animator.enabled = true;
+                }
+            }
+        }
+
+        // Helper Method to Convert ConfigEntry<Color> to UnityEngine.Color
+        private Color ConvertToColor(Color colorConfig) {
+            return new Color(colorConfig.r, colorConfig.g, colorConfig.b, colorConfig.a);
+        }
+
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
 
@@ -391,10 +444,10 @@ namespace ColorAssist {
             }
 
             if (scene.name == "A11_S0_Boss_YiGung_回蓬萊" || scene.name == "A11_S0_Boss_YiGung") {
-                MakeOutline("Animator/View/YiGung/Weapon/Foo/FooSprite", attackEffectColor);
-                MakeOutline("Animator/View/YiGung/Weapon/Sword/Effect", attackEffectColor);
-                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/紅/AttackEffect", attackEffectColor);
-                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/究極紅/AttackEffect", attackEffectColor);
+                MakeOutline("Animator/View/YiGung/Weapon/Foo/FooSprite", _AttackEffectColor.Value);
+                MakeOutline("Animator/View/YiGung/Weapon/Sword/Effect", _AttackEffectColor.Value);
+                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/紅/AttackEffect", _AttackEffectColor.Value);
+                MakeOutline("Animator/View/YiGung/Attack Effect/紅白白紅/究極紅/AttackEffect", _AttackEffectColor.Value);
             }
 
             UpdateHealthColor();

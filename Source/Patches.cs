@@ -16,15 +16,10 @@ public class Patches {
     [HarmonyPrefix]
     private static bool hookSpriteRendererRCGExt(ref SpriteRendererRCGExt __instance) {
         //ToastManager.Toast($"{__instance.gameObject.name}:{__instance.gameObject.GetComponent<SpriteRenderer>().color}");
+        if ((__instance.gameObject.name == "Internal Injury"))
+            if (ColorAssist.Instance.isInternalHeealthBar.Value)
+                __instance.gameObject.GetComponent<SpriteRenderer>().color = ColorAssist.Instance._InternalHpColor.Value;
 
-        if (!(__instance.gameObject.name == "Internal Injury"))
-            return true;
-
-        //ToastManager.Toast(__instance.gameObject.GetComponent<SpriteRenderer>().color);
-
-        if (!ColorAssist.Instance.isHeealthBar.Value) return true;
-
-        __instance.gameObject.GetComponent<SpriteRenderer>().color = ColorAssist.Instance.healthBarColor;
         return true; // the original method should be executed
     }
 
@@ -32,9 +27,8 @@ public class Patches {
     new Type[] { typeof(PoolObject), typeof(Vector3), typeof(Quaternion), typeof(Transform), typeof(Action<PoolObject>) })]
     [HarmonyPostfix]
     public static void Postfix(ref PoolObject __result, PoolObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, Action<PoolObject> handler = null) {
-        //ToastManager.Toast(prefab.name);
 
-        Color color = ColorAssist.Instance.isAttackEffect.Value ? ColorAssist.Instance.attackEffectColor : ColorAssist.Instance.defaultColor;
+        Color color = ColorAssist.Instance.isAttackEffect.Value ? ColorAssist.Instance._AttackEffectColor.Value : ColorAssist.Instance.defaultColor;
 
         if (ColorAssist.Instance.kickHint == null) {
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
@@ -86,7 +80,13 @@ public class Patches {
                 }
             }
         }
-    }
 
+        if (prefab.name == "UIBossHP") {
+            if (ColorAssist.Instance.isBossHeealthBar.Value) {
+                __result.GetComponent<Animator>().enabled = false;
+                __result.transform.Find("Offset(DontKeyAnimationOnThisNode)").Find("AnimationOffset").Find("HealthBar").Find("BG").Find("MaxHealth").Find("Health").GetComponent<SpriteRenderer>().color = ColorAssist.Instance._BossHpColor.Value;
+            }
+        }
+    }
 
 }

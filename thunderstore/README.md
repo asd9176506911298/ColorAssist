@@ -9,7 +9,9 @@
 - Tritanomaly
 - Achromatopsia
 - Achromatomaly
+- Custom HealthBar Color
 - Custom Internal Injury Color
+- Custom Boss HealthBar Color
 - Custom Attack Effect Color
 
 # Filter Source
