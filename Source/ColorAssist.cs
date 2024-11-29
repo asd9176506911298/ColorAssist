@@ -224,16 +224,27 @@ namespace ColorAssist {
         private void TestMethod() {
             if (!enableSomethingConfig.Value) return;
 
-            GameObject bar = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar");
-            bar.GetComponent<Animator>().enabled = false;
+            //UpdateBarAndAnimator(
+            //    "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health",
+            //    false,
+            //    ConvertToColor(_NormalHpColor.Value),
+            //    new Color(0.321f, 1f, 0.678f, 1f),
+            //    "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar"
+            //);
 
-            GameObject NormalHealth = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health");
-            ToastManager.Toast(NormalHealth);
-            if (NormalHealth) {
-                ToastManager.Toast(NormalHealth.GetComponent<SpriteRenderer>().color);
-                NormalHealth.GetComponent<SpriteRenderer>().color = _NormalHpColor.Value;
-            }
-            ToastManager.Toast("test");
+            //ToastManager.Toast(GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health"));
+            //GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health").GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 0f, 1f);
+
+            //GameObject bar = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar");
+            //bar.GetComponent<Animator>().enabled = false;
+
+            //GameObject NormalHealth = GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health");
+            //ToastManager.Toast(NormalHealth);
+            //if (NormalHealth) {
+            //    ToastManager.Toast(NormalHealth.GetComponent<SpriteRenderer>().color);
+            //    NormalHealth.GetComponent<SpriteRenderer>().color = _NormalHpColor.Value;
+            //}
+            //ToastManager.Toast("test");
             return;
             GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
 
@@ -341,63 +352,65 @@ namespace ColorAssist {
         }
 
         private void UpdateHealthColor() {
-            
-            // Update health bar color for specific GameObjects
-            UpdateBarColor(
+            // Update internal health bar color
+            UpdateBarAndAnimator(
                 "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/RecoverableHealth",
                 isInternalHeealthBar.Value,
                 ConvertToColor(_InternalHpColor.Value),
                 new Color(0.566f, 0.000f, 0.161f, 0.706f)
             );
 
-            UpdateBarColor(
+            UpdateBarAndAnimator(
                 "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)/Offset(DontKeyAnimationOnThisNode)/AnimationOffset/HealthBar/BG/MaxHealth/Internal Injury",
                 isInternalHeealthBar.Value,
                 ConvertToColor(_InternalHpColor.Value),
                 new Color(0.481f, 0.000f, 0.242f, 1.000f)
             );
 
-      
-            DisableAnimator("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar");
-            UpdateBarColor(
+            //DisableAnimator("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar");
+
+            //GameObject.Find("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health").GetComponent<SpriteRenderer>().color = isNormalHeealthBar.Value ? _NormalHpColor.Value : new Color(0.321f, 1f, 0.678f, 1f);
+
+
+            // Update normal health bar color
+            UpdateBarAndAnimator(
                 "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar/BG renderer/Health",
                 isNormalHeealthBar.Value,
                 ConvertToColor(_NormalHpColor.Value),
-                new Color(0.321f, 1f, 0.678f, 1f)
+                new Color(0.321f, 1f, 0.678f, 1f),
+                "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/HideUIAbilityCheck/[Activate] PlayerUI Folder/PlayerInGameUI renderer/LeftTop/HealthBarBase/HealthBar"
             );
 
-
-
-            DisableAnimator("GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)");
-            UpdateBarColor(
+            // Update boss health bar color
+            UpdateBarAndAnimator(
                 "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)/Offset(DontKeyAnimationOnThisNode)/AnimationOffset/HealthBar/BG/MaxHealth/Health",
-                true,
+                isBossHeealthBar.Value,
                 ConvertToColor(_BossHpColor.Value),
-                new Color(1f, 0.239f, 0.324f, 1f)
+                new Color(1f, 0.239f, 0.324f, 1f),
+                "GameCore(Clone)/RCG LifeCycle/UIManager/GameplayUICamera/MonsterHPRoot/BossHPRoot/UIBossHP(Clone)"
             );
-  
         }
 
-        // Helper Method to Update Bar Color
-        private void UpdateBarColor(string objectPath, bool condition, Color trueColor, Color falseColor, string animatorPath = "") {
-            GameObject barObject = GameObject.Find(objectPath);
+        // Unified method to update both bar color and animator
+        private void UpdateBarAndAnimator(string barPath, bool condition, Color trueColor, Color falseColor, string animatorPath = "") {
+
+            // Manage animator state if an animator path is provided
+            if (!string.IsNullOrEmpty(animatorPath)) {
+                DisableAnimator(animatorPath);
+            }
+
+            GameObject barObject = GameObject.Find(barPath);
             if (barObject) {
                 SpriteRenderer renderer = barObject.GetComponent<SpriteRenderer>();
                 if (renderer) {
                     renderer.color = condition ? trueColor : falseColor;
                 }
             }
-
-            if(animatorPath != "") {
-                if (condition)
-                    DisableAnimator(animatorPath);
-                else
-                    EnableAnimator(animatorPath);
-            }
+            
         }
 
         // Helper Method to Disable Animator
-        public void DisableAnimator(string objectPath) {
+        private void DisableAnimator(string objectPath) {
             GameObject animObject = GameObject.Find(objectPath);
             if (animObject) {
                 Animator animator = animObject.GetComponent<Animator>();
@@ -422,7 +435,6 @@ namespace ColorAssist {
         private Color ConvertToColor(Color colorConfig) {
             return new Color(colorConfig.r, colorConfig.g, colorConfig.b, colorConfig.a);
         }
-
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
 
